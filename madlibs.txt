@@ -1,0 +1,12 @@
+JUDUL: story_maker
+
+DESKRIPSI
+	story, mark: str;
+	word: str;
+
+IMPLEMENTASI
+	READ story;
+	FOR mark IN story;
+	mark <- word;
+
+
