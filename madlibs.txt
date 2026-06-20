@@ -1,12 +1,59 @@
-JUDUL: story_maker
+PROGRAM CeritaInteraktif
 
-DESKRIPSI
-	story, mark: str;
-	word: str;
+    // Tentukan marker yang sama untuk semua placeholder
+    SET MARKER = "(...)"
+    
+    // Template cerita dengan marker yang identik
+    SET ceritaTemplate = "Halo (...), selamat pagi! Hari ini kita akan pergi ke (...). Di sana, kita akan bertemu dengan (...) yang sangat terkenal. Jangan lupa bawa (...), karena kita akan (...)."
 
-IMPLEMENTASI
-	READ story;
-	FOR mark IN story;
-	mark <- word;
+    // Hitung jumlah marker yang muncul di template
+    SET jumlahPlaceholder = HITUNG_MUNCUL(ceritaTemplate, MARKER)
 
+    TAMPILKAN "=== GAME CERITA INTERAKTIF ==="
+    TAMPILKAN "Terdapat " + jumlahPlaceholder + " bagian kosong yang ditandai dengan (...)"
+    TAMPILKAN "Masukkan " + jumlahPlaceholder + " kata/kalimat, dipisahkan dengan koma (,)"
+    TAMPILKAN "Contoh: Andi, pantai, Rani, payung, piknik"
 
+    ULANGI
+        TAMPILKAN "Masukkan input Anda: "
+        BACA inputUser
+
+        // Pisahkan berdasarkan koma
+        SET daftarKata = SPLIT(inputUser, ",")
+        
+        // Hilangkan spasi di awal/akhir tiap kata
+        UNTUK i DARI 0 HINGGA panjang(daftarKata) - 1
+            daftarKata[i] = TRIM(daftarKata[i])
+        AKHIR UNTUK
+
+        // Validasi jumlah input harus sama dengan jumlah marker
+        JIKA panjang(daftarKata) != jumlahPlaceholder MAKA
+            TAMPILKAN "Error: Jumlah input tidak sesuai. Butuh " + jumlahPlaceholder + " kata, Anda memasukkan " + panjang(daftarKata)
+            TAMPILKAN "Silakan coba lagi."
+        LAIN
+            KELUAR DARI ULANGI   // input valid
+        AKHIR JIKA
+
+    SAMPAI (input valid)
+
+    // --- Proses penggantian marker secara berurutan ---
+    // Pecah cerita menjadi potongan-potongan berdasarkan marker
+    // Contoh: "A (...) B (...)" -> ["A ", " B ", ""]
+    SET potonganCerita = SPLIT(ceritaTemplate, MARKER)
+
+    SET ceritaFinal = ""
+    
+    // Gabungkan potongan cerita dengan input user secara berselang-seling
+    UNTUK i DARI 0 HINGGA jumlahPlaceholder - 1
+        ceritaFinal = ceritaFinal + potonganCerita[i] + daftarKata[i]
+    AKHIR UNTUK
+
+    // Tambahkan potongan terakhir (setelah marker terakhir)
+    ceritaFinal = ceritaFinal + potonganCerita[jumlahPlaceholder]
+
+    // Tampilkan hasil akhir
+    TAMPILKAN "\n=== CERITA HASIL KARYA ANDA ==="
+    TAMPILKAN ceritaFinal
+    TAMPILKAN "\nTerima kasih sudah bermain!"
+
+AKHIR PROGRAM
